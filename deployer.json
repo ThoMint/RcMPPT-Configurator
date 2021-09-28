@@ -1,0 +1,12 @@
+{
+    "bin": [
+        "RcMPPT-Configurator.exe",
+        "./../../../../../Qt/Tools/OpenSSL/Win_x64/bin/libssl-1_1-x64.dll"
+    ],
+    "libDir": [
+        "./../../../../../Qwt/qwt-6.1.6/lib/",
+        "./../../../../../Qt/Tools/OpenSSL/Win_x64/bin/"
+    ],
+    "qif": "./qif/",
+    "qmake": "./../../../../../Qt/5.15.2/mingw81_64/bin/qmake.exe"
+}

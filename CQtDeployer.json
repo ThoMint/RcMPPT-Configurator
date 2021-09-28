@@ -1,0 +1,23 @@
+{
+    "bin": [
+        "./build/release/RcMPPT-Configurator.exe",
+        "C:/Qt/Tools/OpenSSL/Win_x64/bin/libssl-1_1-x64.dll"
+    ],
+    "qmake": "C:/Qt/5.15.2/mingw81_64/bin/qmake.exe",
+    "clear": true,
+    "force-clear": false,
+    "libDir": [
+        "C:/Qwt/qwt-6.1.6/lib",
+        "C:/Qt/Tools/OpenSSL/Win_x64/bin"
+    ],
+    "recursiveDepth": 5,
+    "verbose": 3,
+    "name": "RcMPPT-Configurator",
+    "qif": "./qif/",
+    "description": "A Configuration App for RcMPPT Solar Charge Controllers",
+    "deployVersion": "1.0.0",
+    "releaseDate": "2021-09-20",
+    "icon": "./misc/RcMPPT-Configurator.ico",
+    "publisher": "Thomas Hofmann",
+    "homePage": "https://github.com/ThoMint/RcMPPT-Configurator"
+}
