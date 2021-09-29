@@ -3,7 +3,7 @@
         "./build/release/RcMPPT-Configurator.exe",
         "C:/Qt/Tools/OpenSSL/Win_x64/bin/libssl-1_1-x64.dll"
     ],
-    "qmake": "C:/Qt/5.15.2/mingw81_64/bin/qmake.exe",
+    "qmake": "C:/Qt/5.12.11/mingw73_64/bin/qmake.exe",
     "clear": true,
     "force-clear": false,
     "libDir": [
@@ -13,7 +13,7 @@
     "recursiveDepth": 5,
     "verbose": 3,
     "name": "RcMPPT-Configurator",
-    "qif": "./qif/",
+    "qif": true,
     "description": "A Configuration App for RcMPPT Solar Charge Controllers",
     "deployVersion": "1.0.0",
     "releaseDate": "2021-09-20",
