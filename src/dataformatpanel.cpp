@@ -26,13 +26,12 @@
 #include "utils.h"
 #include "setting_defines.h"
 
-DataFormatPanel::DataFormatPanel(QSerialPort* port, QWidget *parent) :
+DataFormatPanel::DataFormatPanel(QSerialPort* port, PortControl* portControl, configurator* configurator, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DataFormatPanel),
-    bsReader(port, this),
-    asciiReader(port, this),
-    framedReader(port, this),
+    hifReader(port, portControl, configurator, this),
     demoReader(port, this)
+
 {
     ui->setupUi(this);
 
@@ -41,31 +40,11 @@ DataFormatPanel::DataFormatPanel(QSerialPort* port, QWidget *parent) :
     readerBeforeDemo = nullptr;
     _bytesRead = 0;
 
+    //TODO: Set hostInterfaceReader as default and disable others
     // initalize default reader
-    currentReader = &bsReader;
-    bsReader.enable();
-    ui->rbBinary->setChecked(true);
-    ui->horizontalLayout->addWidget(bsReader.settingsWidget(), 1);
-
-    // initalize reader selection buttons
-    readerSelectButtons.addButton(ui->rbBinary);
-    readerSelectButtons.addButton(ui->rbAscii);
-    readerSelectButtons.addButton(ui->rbFramed);
-
-    connect(ui->rbBinary, &QRadioButton::toggled, [this](bool checked)
-            {
-                if (checked) selectReader(&bsReader);
-            });
-
-    connect(ui->rbAscii, &QRadioButton::toggled, [this](bool checked)
-            {
-                if (checked) selectReader(&asciiReader);
-            });
-
-    connect(ui->rbFramed, &QRadioButton::toggled, [this](bool checked)
-            {
-                if (checked) selectReader(&framedReader);
-            });
+    currentReader = &hifReader;
+    currentReader->enable();
+    selectReader(&hifReader);
 }
 
 DataFormatPanel::~DataFormatPanel()
@@ -103,11 +82,6 @@ void DataFormatPanel::enableDemo(bool demoEnabled)
         Q_ASSERT(readerBeforeDemo != nullptr);
         selectReader(readerBeforeDemo);
     }
-
-    // disable/enable reader selection buttons during/after demo
-    ui->rbAscii->setDisabled(demoEnabled);
-    ui->rbBinary->setDisabled(demoEnabled);
-    ui->rbFramed->setDisabled(demoEnabled);
 }
 
 bool DataFormatPanel::isDemoEnabled() const
@@ -145,29 +119,12 @@ void DataFormatPanel::saveSettings(QSettings* settings)
 {
     settings->beginGroup(SettingGroup_DataFormat);
 
-    // save selected data format (current reader)
+    // save selected data format (custom reader)
     QString format;
-    AbstractReader* selectedReader = isDemoEnabled() ? readerBeforeDemo : currentReader;
-    if (selectedReader == &bsReader)
-    {
-        format = "binary";
-    }
-    else if (selectedReader == &asciiReader)
-    {
-        format = "ascii";
-    }
-    else // framed reader
-    {
-        format = "custom";
-    }
+    format = "custom";
     settings->setValue(SG_DataFormat_Format, format);
 
     settings->endGroup();
-
-    // save reader settings
-    bsReader.saveSettings(settings);
-    asciiReader.saveSettings(settings);
-    framedReader.saveSettings(settings);
 }
 
 void DataFormatPanel::loadSettings(QSettings* settings)
@@ -175,29 +132,13 @@ void DataFormatPanel::loadSettings(QSettings* settings)
     settings->beginGroup(SettingGroup_DataFormat);
 
     // load selected format
-    QString format = settings->value(
-        SG_DataFormat_Format, QString()).toString();
-
-    if (format == "binary")
-    {
-        selectReader(&bsReader);
-        ui->rbBinary->setChecked(true);
-    }
-    else if (format == "ascii")
-    {
-        selectReader(&asciiReader);
-        ui->rbAscii->setChecked(true);
-    }
-    else if (format == "custom")
+    QString format = settings->value(SG_DataFormat_Format, QString()).toString();
+    /*
+    if (format == "custom")
     {
         selectReader(&framedReader);
         ui->rbFramed->setChecked(true);
     } // else current selection stays
-
+    */
     settings->endGroup();
-
-    // load reader settings
-    bsReader.loadSettings(settings);
-    asciiReader.loadSettings(settings);
-    framedReader.loadSettings(settings);
 }

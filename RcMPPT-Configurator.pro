@@ -35,9 +35,13 @@ CONFIG += qwt
 
 DEFINES += PROGRAM_NAME="\\\"RcMPPT-Configurator\\\""
 
-DEFINES += VERSION_MAJOR=10 VERSION_MINOR=0 VERSION_PATCH=0 VERSION_STRING=\\\"10.0.0\\\"
+DEFINES += VERSION_MAJOR=10 VERSION_MINOR=0 VERSION_PATCH=0 VERSION_STRING=\\\"10.0.0\\\" VERSION_REVISION=\\\"10.0.0\\\"
 
 SOURCES += \
+    src/DarkStyle.cpp \
+    src/configurator.cpp \
+    src/hostinterfacereader.cpp \
+    src/hostinterfacereadersettings.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/portcontrol.cpp \
@@ -70,23 +74,14 @@ SOURCES += \
     src/linindexbuffer.cpp \
     src/readonlybuffer.cpp \
     src/framebufferseries.cpp \
-    src/numberformatbox.cpp \
-    src/endiannessbox.cpp \
     src/abstractreader.cpp \
-    src/binarystreamreader.cpp \
-    src/binarystreamreadersettings.cpp \
-    src/asciireader.cpp \
-    src/asciireadersettings.cpp \
     src/demoreader.cpp \
     src/demoreadersettings.cpp \
-    src/framedreader.cpp \
-    src/framedreadersettings.cpp \
     src/plotmanager.cpp \
     src/plotmenu.cpp \
     src/barplot.cpp \
     src/barchart.cpp \
     src/barscaledraw.cpp \
-    src/numberformat.cpp \
     src/updatechecker.cpp \
     src/versionnumber.cpp \
     src/updatecheckdialog.cpp \
@@ -99,6 +94,12 @@ SOURCES += \
     src/bpslabel.cpp
 
 HEADERS += \
+    src/DarkStyle.h \
+    src/configurator.h \
+    src/hostInterfaceDefines.h \
+    src/hostInterfaceVariables.h \
+    src/hostinterfacereader.h \
+    src/hostinterfacereadersettings.h \
     src/mainwindow.h \
     src/utils.h \
     src/portcontrol.h \
@@ -121,19 +122,10 @@ HEADERS += \
     src/sneakylineedit.h \
     src/framebufferseries.h \
     src/plotcontrolpanel.h \
-    src/numberformatbox.h \
-    src/endiannessbox.h \
-    src/framedreadersettings.h \
     src/abstractreader.h \
-    src/binarystreamreader.h \
-    src/binarystreamreadersettings.h \
-    src/asciireadersettings.h \
-    src/asciireader.h \
     src/demoreader.h \
-    src/framedreader.h \
     src/plotmanager.h \
     src/setting_defines.h \
-    src/numberformat.h \
     src/recordpanel.h \
     src/updatechecker.h \
     src/updatecheckdialog.h \
@@ -165,6 +157,8 @@ HEADERS += \
     src/zoomer.h
 
 FORMS += \
+    src/configurator.ui \
+    src/hostinterfacereadersettings.ui \
     src/mainwindow.ui \
     src/about_dialog.ui \
     src/portcontrol.ui \
@@ -173,11 +167,6 @@ FORMS += \
     src/commandwidget.ui \
     src/dataformatpanel.ui \
     src/plotcontrolpanel.ui \
-    src/numberformatbox.ui \
-    src/endiannessbox.ui \
-    src/framedreadersettings.ui \
-    src/binarystreamreadersettings.ui \
-    src/asciireadersettings.ui \
     src/recordpanel.ui \
     src/updatecheckdialog.ui \
     src/demoreadersettings.ui \
@@ -190,6 +179,9 @@ CONFIG += c++11
 RC_FILE = misc/windows_icon.rc
 
 RESOURCES += misc/icons.qrc
+RESOURCES += darkstyle.qrc
+
+
 
 win32 {
     RESOURCES += misc/winicons.qrc

@@ -29,11 +29,10 @@
 #include <QtGlobal>
 #include <QButtonGroup>
 
-#include "binarystreamreader.h"
-#include "asciireader.h"
 #include "demoreader.h"
-#include "framedreader.h"
 #include "datarecorder.h"
+#include "hostinterfacereader.h"
+#include "configurator.h"
 
 namespace Ui {
 class DataFormatPanel;
@@ -44,7 +43,7 @@ class DataFormatPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit DataFormatPanel(QSerialPort* port, QWidget* parent = 0);
+    explicit DataFormatPanel(QSerialPort* port, PortControl* portControl, configurator* configurator, QWidget* parent = 0);
     ~DataFormatPanel();
 
     /// Returns currently selected number of channels
@@ -68,13 +67,9 @@ signals:
 
 private:
     Ui::DataFormatPanel *ui;
-    QButtonGroup readerSelectButtons;
 
     QSerialPort* serialPort;
-
-    BinaryStreamReader bsReader;
-    AsciiReader asciiReader;
-    FramedReader framedReader;
+    hostInterfaceReader hifReader;
     /// Currently selected reader
     AbstractReader* currentReader;
     /// Disable current reader and enable a another one

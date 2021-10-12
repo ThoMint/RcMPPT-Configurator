@@ -196,8 +196,8 @@ void Plot::darkBackground(bool enabled)
     QColor gridColor;
     if (enabled)
     {
-        setCanvasBackground(QBrush(Qt::black));
-        gridColor.setHsvF(0, 0, 0.25);
+        setCanvasBackground(QBrush(QColor(60, 60, 60)));
+        gridColor.setRgb(206,206,206);
         grid.setPen(gridColor);
         zoomer.setRubberBandPen(QPen(Qt::white));
         zoomer.setTrackerPen(QPen(Qt::white));

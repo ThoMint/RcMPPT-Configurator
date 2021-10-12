@@ -70,7 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     secondaryPlot(NULL),
     snapshotMan(this, &stream),
     commandPanel(&serialPort),
-    dataFormatPanel(&serialPort),
+    configuratorPanel(&serialPort),
+    dataFormatPanel(&serialPort, &portControl, &configuratorPanel),
     recordPanel(&stream),
     textView(&stream),
     updateCheckDialog(this),
@@ -80,13 +81,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     plotMan = new PlotManager(ui->plotArea, &plotMenu, &stream);
 
-    ui->tabWidget->insertTab(0, &portControl, "Port");
+    //ui->tabWidget->insertTab(0, &portControl, "Port");
     ui->tabWidget->insertTab(1, &dataFormatPanel, "Data Format");
     ui->tabWidget->insertTab(2, &plotControlPanel, "Plot");
-    ui->tabWidget->insertTab(3, &commandPanel, "Commands");
+    //ui->tabWidget->insertTab(3, &commandPanel, "Commands");
+    ui->tabWidget->insertTab(3, &configuratorPanel, "Configuration");
     ui->tabWidget->insertTab(4, &recordPanel, "Record");
-    ui->tabWidget->insertTab(5, &textView, "Text View");
-    ui->tabWidget->setCurrentIndex(0);
+    //ui->tabWidget->insertTab(5, &textView, "Text View");
+    ui->tabWidget->setCurrentIndex(3);
     auto tbPortControl = portControl.toolBar();
     addToolBar(tbPortControl);
     addToolBar(recordPanel.toolbar());
@@ -544,7 +546,7 @@ void MainWindow::loadAllSettings(QSettings* settings)
 {
     loadMWSettings(settings);
     portControl.loadSettings(settings);
-    dataFormatPanel.loadSettings(settings);
+    //dataFormatPanel.loadSettings(settings);
     stream.loadSettings(settings);
     plotControlPanel.loadSettings(settings);
     plotMenu.loadSettings(settings);

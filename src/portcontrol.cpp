@@ -26,6 +26,8 @@
 #include <QLineEdit>
 #include <QMap>
 #include <QtDebug>
+#include <QTimer>
+#include <QThread>
 
 #include "setting_defines.h"
 #include "utils.h"
@@ -268,9 +270,29 @@ void PortControl::togglePort()
     if (serialPort->isOpen())
     {
         pinUpdateTimer.stop();
-        serialPort->close();
-        qDebug() << "Closed port:" << serialPort->portName();
-        emit portToggled(false);
+        //TODO: Stop blocking main thread
+
+        QThread thread;
+        serialPort->moveToThread(&thread);
+        connect(&thread, &QThread::started, serialPort, [&]() {
+            serialPort->close();
+            serialPort->moveToThread(QApplication::instance()->thread());
+            thread.quit();
+        });
+        thread.start();
+        if(thread.wait(1000))
+        {
+            qDebug() << "Closed port:" << serialPort->portName();
+            emit portToggled(false);
+        }
+        else
+        {
+            qDebug() << "Failed to close port:" << serialPort->portName();
+            thread.quit();
+            thread.terminate();
+            thread.wait();
+        }
+
     }
     else
     {

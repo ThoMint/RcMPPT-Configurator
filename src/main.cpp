@@ -21,10 +21,12 @@
 #include <QtGlobal>
 #include <QIcon>
 #include <iostream>
+#include <QFile>
 
 #include "mainwindow.h"
 #include "tooltipfilter.h"
 #include "version.h"
+#include "DarkStyle.h"
 
 MainWindow* pMainWindow = nullptr;
 
@@ -71,14 +73,19 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context,
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication a(argc, argv);
     QApplication::setApplicationName(PROGRAM_NAME);
     QApplication::setApplicationVersion(VERSION_STRING);
+    QApplication::setStyle(new DarkStyle);
+    QApplication::setPalette(QApplication::style()->standardPalette());
 
 #ifdef Q_OS_WIN
     QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << ":icons");
-    QIcon::setThemeName("tango");
+    QIcon::setThemeName("material");
 #endif
+
+    //FramelessWindow framelessWindow;
 
     qInstallMessageHandler(messageHandler);
     MainWindow w;
@@ -90,6 +97,8 @@ int main(int argc, char *argv[])
     // log application information
     qDebug() << "RcMPPT-Configurator" << VERSION_STRING;
     qDebug() << "Revision" << VERSION_REVISION;
+
+    //framelessWindow.setContent(pMainWindow);
 
     w.show();
 

@@ -176,7 +176,7 @@ void PlotManager::onChannelInfoChanged(const QModelIndex &topLeft,
         bool visible = topLeft.sibling(ci, ChannelInfoModel::COLUMN_VISIBILITY).data(Qt::CheckStateRole).toBool();
 
         curves[ci]->setTitle(name);
-        curves[ci]->setPen(color);
+        curves[ci]->setPen(color, 1.2);
         curves[ci]->setVisible(visible);
         curves[ci]->setItemAttribute(QwtPlotItem::Legend, visible);
 
@@ -408,7 +408,7 @@ void PlotManager::_addCurve(QwtPlotCurve* curve)
 
     unsigned index = curves.size()-1;
     auto color = infoModel->color(index);
-    curve->setPen(color);
+    curve->setPen(color, 1.2);
 
     // create the plot for the curve if we are on multi display
     Plot* plot;

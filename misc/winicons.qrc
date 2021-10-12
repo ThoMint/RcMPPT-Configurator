@@ -1,11 +1,11 @@
 <RCC>
-    <qresource prefix="/icons/tango">
-        <file alias="index.theme">tango/index.theme</file>
-        <file alias="32x32/actions/list-add.png">tango/list-add.png</file>
-        <file alias="32x32/actions/list-remove.png">tango/list-remove.png</file>
-        <file alias="32x32/actions/camera.png">tango/camera.png</file>
-        <file alias="32x32/actions/edit-clear.png">tango/edit-clear.png</file>
-        <file alias="32x32/actions/player_pause.png">tango/media-playback-pause.png</file>
-        <file alias="32x32/actions/media-record.png">tango/media-record.png</file>
+    <qresource prefix="/icons/material">
+        <file alias="index.theme">material/index.theme</file>
+        <file alias="32x32/actions/camera.png">material/camera.png</file>
+        <file alias="32x32/actions/edit-clear.png">material/edit-clear.png</file>
+        <file alias="32x32/actions/list-add.png">material/list-add.png</file>
+        <file alias="32x32/actions/list-remove.png">material/list-remove.png</file>
+        <file alias="32x32/actions/player_pause.png">material/media-playback-pause.png</file>
+        <file alias="32x32/actions/media-record.png">material/media-record.png</file>
     </qresource>
 </RCC>

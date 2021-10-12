@@ -34,7 +34,7 @@ DemoReader::DemoReader(QIODevice* device, QObject* parent) :
             this, &DemoReader::onNumChannelsChanged);
 
     count = 0;
-    timer.setInterval(100);
+    timer.setInterval(10);
     connect(&timer, &QTimer::timeout,
             this, &DemoReader::demoTimerTimeout);
 }

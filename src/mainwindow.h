@@ -36,6 +36,7 @@
 
 #include "portcontrol.h"
 #include "commandpanel.h"
+#include "configurator.h"
 #include "dataformatpanel.h"
 #include "plotcontrolpanel.h"
 #include "recordpanel.h"
@@ -86,6 +87,7 @@ private:
 
     QLabel spsLabel;
     CommandPanel commandPanel;
+    configurator configuratorPanel;
     DataFormatPanel dataFormatPanel;
     RecordPanel recordPanel;
     PlotControlPanel plotControlPanel;

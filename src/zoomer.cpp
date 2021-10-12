@@ -32,6 +32,7 @@ Zoomer::Zoomer(QWidget* widget, bool doReplot) :
 {
     is_panning = false;
 
+
     setTrackerMode(AlwaysOn);
 
     // set corner widget between the scrollbars with default background color
