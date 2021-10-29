@@ -23,6 +23,7 @@ AbstractReader::AbstractReader(QIODevice* device, QObject* parent) :
     QObject(parent)
 {
     _device = device;
+    timer = new QTimer(this);
     bytesRead = 0;
 }
 
@@ -35,12 +36,15 @@ void AbstractReader::enable(bool enabled)
 {
     if (enabled)
     {
-        QObject::connect(_device, &QIODevice::readyRead,
-                         this, &AbstractReader::onDataReady);
+        //QObject::connect(_device, &QIODevice::readyRead, this, &AbstractReader::onDataReady);
+
+        connect(timer, &QTimer::timeout, this, &AbstractReader::onDataReady);
+        timer->start(0);
     }
     else
     {
-        QObject::disconnect(_device, 0, this, 0);
+        //QObject::disconnect(_device, 0, this, 0);
+        timer->stop();
         disconnectSinks();
     }
 }

@@ -22,12 +22,21 @@
 
 #include <QSettings>
 #include <QString>
+#include <QTimer>
+#include <QList>
 
 #include "samplepack.h"
 #include "abstractreader.h"
 #include "configurator.h"
 #include "hostinterfacereadersettings.h"
 #include "hostInterfaceDefines.h"
+#include "serial/include/serial/serial.h"
+
+typedef struct sampleState
+{
+    QString channelNames[PLOT_MAX_NUM_CHANNELS];
+    uint32_t channelSamples[PLOT_MAX_NUM_CHANNELS];
+} deviceSampleState;
 
 class hostInterfaceReader : public AbstractReader
 {
@@ -51,21 +60,27 @@ private:
 
     HostCommand ActualHostCMD;
     DeviceCommand ActualDeviceCMD;
-    QByteArray USBHostCMD;
 
     QSerialPort* _serialDevice;
+    serial::Serial* my_serial;
 
     DeviceCommand DeviceCMDQueue[DEVICE_CMD_QUEUE_SIZE];
     uint8_t deviceCMDsToProcess = 0;
     int deviceCMDProcessPos = 0, deviceCMDPopulatePos = 0;
 
+    deviceSampleState currentSampleState;
+    int currenSampleIndex;
+
 private slots:
-    unsigned readData() override;
+    unsigned int readData() override;
     void hostInterfaceExecuteActualCommand();
     unsigned int hostInterfaceProcessCommand();
     void hostInterfaceQueueDeviceCMD(DeviceCommand cmd);
     void hostInterfaceQueueDeviceCMDExpl(uint8_t Status, uint8_t Opcode, uint8_t Type, uint32_t Int32);
     void configChanged(RcMPPTConfiguration configState);
+
+signals:
+    void sampleRateSliderChanged(int sliderPos);
 /*
     SamplePack* parseLine(const QString& line) const;
 */

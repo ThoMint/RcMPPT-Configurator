@@ -68,6 +68,7 @@ public slots:
 protected:
     /// Reader should read from this device in `readData()` function.
     QIODevice* _device;
+    QTimer *timer;
 
     /// Reader should check this variable to determine if reading is
     /// paused in `readData()`
@@ -78,7 +79,7 @@ protected:
      * where the implementors should read the data and return the
      * exact number of bytes read from the device.
      */
-    virtual unsigned readData() = 0;
+    virtual unsigned int readData() = 0;
 
 private:
     unsigned bytesRead;

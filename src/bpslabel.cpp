@@ -53,7 +53,7 @@ void BPSLabel::onBpsTimeout()
     if (bits >= maxBps)
     {
         // TODO: an icon for bps warning
-        str = QString(tr("!%1/%2bps")).arg(bits).arg(maxBps);
+        str = QString(tr("%1 (max=%2bps)")).arg(bits).arg(maxBps);
         setToolTip(tr(BPS_TOOLTIP_ERR));
     }
     else

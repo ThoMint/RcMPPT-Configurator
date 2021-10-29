@@ -320,16 +320,17 @@ void PortControl::togglePort()
         // open port
         if (serialPort->open(QIODevice::ReadWrite))
         {
+            serialPort->setBaudRate(921600);
             // set port settings
-            _selectBaudRate(ui->cbBaudRate->currentText());
-            selectParity((QSerialPort::Parity) parityButtons.checkedId());
-            selectDataBits((QSerialPort::DataBits) dataBitsButtons.checkedId());
-            selectStopBits((QSerialPort::StopBits) stopBitsButtons.checkedId());
-            selectFlowControl((QSerialPort::FlowControl) flowControlButtons.checkedId());
+            //_selectBaudRate(ui->cbBaudRate->currentText());
+            //selectParity((QSerialPort::Parity) parityButtons.checkedId());
+            //selectDataBits((QSerialPort::DataBits) dataBitsButtons.checkedId());
+            //selectStopBits((QSerialPort::StopBits) stopBitsButtons.checkedId());
+            //selectFlowControl((QSerialPort::FlowControl) flowControlButtons.checkedId());
 
             // set output signals
-            serialPort->setDataTerminalReady(ui->ledDTR->isOn());
-            serialPort->setRequestToSend(ui->ledRTS->isOn());
+            //serialPort->setDataTerminalReady(ui->ledDTR->isOn());
+            //serialPort->setRequestToSend(ui->ledRTS->isOn());
 
             // update pin signals
             updatePinLeds();

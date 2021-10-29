@@ -46,6 +46,9 @@ SOURCES += \
     src/mainwindow.cpp \
     src/portcontrol.cpp \
     src/plot.cpp \
+    src/serial/src/impl/unix.cc \
+    src/serial/src/impl/win.cc \
+    src/serial/src/serial.cc \
     src/zoomer.cpp \
     src/scrollzoomer.cpp \
     src/scrollbar.cpp \
@@ -101,6 +104,10 @@ HEADERS += \
     src/hostinterfacereader.h \
     src/hostinterfacereadersettings.h \
     src/mainwindow.h \
+    src/serial/include/serial/impl/unix.h \
+    src/serial/include/serial/impl/win.h \
+    src/serial/include/serial/serial.h \
+    src/serial/include/serial/v8stdint.h \
     src/utils.h \
     src/portcontrol.h \
     src/byteswap.h \

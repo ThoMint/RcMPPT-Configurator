@@ -52,6 +52,12 @@
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>100</number>
+           </property>
           </widget>
          </item>
          <item>
@@ -60,6 +66,24 @@
             <font>
              <pointsize>9</pointsize>
             </font>
+           </property>
+           <property name="wrapping">
+            <bool>false</bool>
+           </property>
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::UpDownArrows</enum>
+           </property>
+           <property name="correctionMode">
+            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="prefix">
+            <string notr="true"/>
+           </property>
+           <property name="suffix">
+            <string notr="true" extracomment="V"/>
            </property>
            <property name="decimals">
             <number>1</number>
@@ -71,7 +95,7 @@
             <double>0.100000000000000</double>
            </property>
            <property name="stepType">
-            <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+            <enum>QAbstractSpinBox::DefaultStepType</enum>
            </property>
            <property name="value">
             <double>0.000000000000000</double>
@@ -108,8 +132,17 @@
              <height>15</height>
             </size>
            </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>10</number>
            </property>
           </widget>
          </item>
@@ -120,14 +153,26 @@
              <pointsize>9</pointsize>
             </font>
            </property>
+           <property name="correctionMode">
+            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+           </property>
+           <property name="prefix">
+            <string notr="true"/>
+           </property>
+           <property name="suffix">
+            <string notr="true" extracomment="A"/>
+           </property>
            <property name="decimals">
-            <number>1</number>
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.100000000000000</double>
            </property>
            <property name="stepType">
-            <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+            <enum>QAbstractSpinBox::DefaultStepType</enum>
            </property>
           </widget>
          </item>

@@ -9,13 +9,17 @@
 #include <QAction>
 #include <QSettings>
 
+#include "hostinterfacereadersettings.h"
+
 namespace Ui {
 class configurator;
 }
 
 typedef struct RcMPPTConfigurationStruct
 {
-    uint32_t outputVoltage = 0;
+    uint32_t targetOutputVoltage = 0;
+    uint32_t targetOutputCurrent = 0;
+    uint32_t targetSampleRate = 100;
 }RcMPPTConfiguration;
 
 class configurator : public QWidget
@@ -26,20 +30,22 @@ public:
     explicit configurator(QSerialPort* port, QWidget *parent = nullptr);
     ~configurator();
 
+signals:
+    void configChanged(RcMPPTConfiguration configState);
+
 private slots:
-    void on_horizontalSlider_Vout_sliderMoved(int position);
+    void on_horizontalSlider_Vout_valueChanged(int value);
 
     void on_doubleSpinBox_Vout_valueChanged(double arg1);
 
-    void on_pushButton_toggled(bool checked);
-
-signals:
-    void configChanged(RcMPPTConfiguration configState);
+public slots:
+    void sampleRateSliderChanged(int sliderPos);
 
 private:
     Ui::configurator *ui;
     QSerialPort* serialPort;
     RcMPPTConfiguration configState;
+    hostInterfaceReaderSettings* _deviceSettings;
 };
 
 #endif // CONFIGURATOR_H

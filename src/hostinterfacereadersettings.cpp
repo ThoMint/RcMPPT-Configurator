@@ -6,8 +6,7 @@ hostInterfaceReaderSettings::hostInterfaceReaderSettings(PortControl* portContro
     ui(new Ui::hostInterfaceReaderSettings)
 {
     ui->setupUi(this);
-    connect(portControl, &PortControl::portToggled,
-            this, &hostInterfaceReaderSettings::onPortToggled);
+    connect(portControl, &PortControl::portToggled, this, &hostInterfaceReaderSettings::onPortToggled);
 }
 
 hostInterfaceReaderSettings::~hostInterfaceReaderSettings()

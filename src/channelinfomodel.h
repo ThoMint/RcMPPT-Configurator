@@ -24,6 +24,7 @@
 #include <QColor>
 #include <QSettings>
 #include <QStringList>
+#include <hostInterfaceDefines.h>
 
 class ChannelInfoModel : public QAbstractTableModel
 {
@@ -83,7 +84,11 @@ public slots:
     /// reset visibility
     void resetVisibility(bool visible);
 
+public:
+    static const  char hifChNames[PLOT_MAX_NUM_CHANNELS][10];
+
 private:
+
     struct ChannelInfo
     {
         explicit ChannelInfo(unsigned index);

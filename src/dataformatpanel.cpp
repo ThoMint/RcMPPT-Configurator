@@ -28,8 +28,8 @@
 
 DataFormatPanel::DataFormatPanel(QSerialPort* port, PortControl* portControl, configurator* configurator, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DataFormatPanel),
     hifReader(port, portControl, configurator, this),
+    ui(new Ui::DataFormatPanel),
     demoReader(port, this)
 
 {

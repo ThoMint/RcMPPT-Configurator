@@ -65,11 +65,13 @@ signals:
     /// Active (selected) reader has changed.
     void sourceChanged(Source* source);
 
+public:
+    hostInterfaceReader hifReader;
+
 private:
     Ui::DataFormatPanel *ui;
 
     QSerialPort* serialPort;
-    hostInterfaceReader hifReader;
     /// Currently selected reader
     AbstractReader* currentReader;
     /// Disable current reader and enable a another one

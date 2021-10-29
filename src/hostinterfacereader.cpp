@@ -28,19 +28,50 @@ hostInterfaceReader::hostInterfaceReader(QSerialPort* device, PortControl* portC
     _settingsWidget(portControl)
 {
     connect(configurator, &configurator::configChanged, this, &hostInterfaceReader::configChanged);
+    connect(&_settingsWidget, &hostInterfaceReaderSettings::sampleRateSliderChanged, configurator, &configurator::sampleRateSliderChanged);
 
     _serialDevice = device;
+    //_serialDevice->setReadBufferSize(8);
+
+    //my_serial = new serial::Serial("COM3", 115200, serial::Timeout::simpleTimeout(1000));
+
+    //qDebug() << my_serial->isOpen();
+
+    //QTimer *timer = new QTimer(this);
+    //connect(timer, SIGNAL(timeout()), this, SLOT(readData()));
+    //timer->start(0);
 
     paused = false;
 
-    _numChannels = 1;
+    currenSampleIndex = 0;
+
+    /*
+    currentSampleState.channelNames->append("Vout");
+    currentSampleState.channelSamples->append(0);
+
+    currentSampleState.channelNames->append("Vin");
+    currentSampleState.channelSamples->append(0);
+
+    currentSampleState.channelNames->append("Iout");
+    currentSampleState.channelSamples->append(0);
+    */
+
+    for(int i = 0; i< PLOT_MAX_NUM_CHANNELS; i++)
+    {
+        currentSampleState.channelSamples[i] = 0;
+        currentSampleState.channelNames[i] = "Ch";
+    }
+
+    _numChannels = PLOT_MAX_NUM_CHANNELS;
     updateNumChannels();
     emit numOfChannelsChanged(_numChannels);
 }
 
 void hostInterfaceReader::configChanged(RcMPPTConfiguration configState)
 {
-    hostInterfaceQueueDeviceCMDExpl(OPSTATUS_OK, OPCODE_REPORT_AVERAGE_VALUE, OPTYPE_OUTPUT_VOLTAGE, configState.outputVoltage);
+    hostInterfaceQueueDeviceCMDExpl(OPSTATUS_OK, OPCODE_SET_SETTING, OPTYPE_TARGET_OUTPUT_VOLTAGE, configState.targetOutputVoltage);
+    hostInterfaceQueueDeviceCMDExpl(OPSTATUS_OK, OPCODE_SET_SETTING, OPTYPE_TARGET_OUTPUT_CURRENT, configState.targetOutputCurrent);
+    hostInterfaceQueueDeviceCMDExpl(OPSTATUS_OK, OPCODE_SET_SETTING, OPTYPE_TARGET_SAMPLE_RATE, configState.targetSampleRate);
 }
 
 QWidget* hostInterfaceReader::settingsWidget()
@@ -63,14 +94,22 @@ void hostInterfaceReader::enable(bool enabled)
     AbstractReader::enable(enabled);
 }
 
-unsigned hostInterfaceReader::readData()
+unsigned int hostInterfaceReader::readData()
 {
     unsigned int numBytesRead = 0;
+
+    //if(!my_serial->isOpen())
+    if(!_serialDevice->isOpen())
+    {
+        //qDebug() << "Error processing Data, Port not open";
+        return numBytesRead;
+    }
 
     // discard only once when we just started reading
     if (firstReadAfterEnable)
     {
         firstReadAfterEnable = false;
+        //numBytesRead += my_serial->read(my_serial->available()).size();
         numBytesRead += _serialDevice->readAll().size();
         return numBytesRead;
     }
@@ -81,7 +120,8 @@ unsigned hostInterfaceReader::readData()
         return numBytesRead;
     }
 
-    //qDebug() << _serialDevice->bytesAvailable();
+    //qDebug() << my_serial->available();
+    qDebug() << _serialDevice->bytesAvailable();
 
     numBytesRead += hostInterfaceProcessCommand();
 
@@ -95,22 +135,29 @@ void hostInterfaceReader::hostInterfaceExecuteActualCommand()
     switch (ActualHostCMD.Opcode)
     {
     case OPCODE_REPORT_LIVE_VALUE:
-        switch (ActualHostCMD.Type) {
+        switch (ActualHostCMD.Type)
+        {
         case OPTYPE_OUTPUT_VOLTAGE:
-            samples = new SamplePack(1, _numChannels);
-            for (unsigned ci = 0; ci < samples->numChannels(); ci++)
-            {
-                //TODO: Parse actual Data
-                samples->data(ci)[0] = static_cast<double>(ActualHostCMD.Value.Int32);
-            }
-            feedOut(*samples);
-            delete samples;
+            currentSampleState.channelSamples[0] = (ActualHostCMD.Value.Int32);
+            currentSampleState.channelNames[0] = "Output Voltage";
             break;
-        default:
+        case OPTYPE_INPUT_VOLTAGE:
+            currentSampleState.channelSamples[1] = (ActualHostCMD.Value.Int32);
+            currentSampleState.channelNames[1] = "Input Voltage";
             break;
         }
         break;
+    case OPCODE_FINISHED_SAMPLE:
+        samples = new SamplePack(1, PLOT_MAX_NUM_CHANNELS);
 
+        for(int i = 0; i < PLOT_MAX_NUM_CHANNELS; i++)
+        {
+            samples->data(i)[0] = currentSampleState.channelSamples[i];
+        }
+
+        feedOut(*samples);
+        delete samples;
+        break;
     default:
         break;
     }
@@ -123,12 +170,6 @@ void hostInterfaceReader::hostInterfaceQueueDeviceCMDExpl(uint8_t Status, uint8_
     cmd.Opcode = Opcode;
     cmd.Type = Type;
     cmd.Value.Int32 = Int32;
-    /*
-    cmd.Value.Byte[0] = Int32 & 0xFF;
-    cmd.Value.Byte[1] = (Int32>>8) & 0xFF;
-    cmd.Value.Byte[2] = (Int32>>16) & 0xFF;
-    cmd.Value.Byte[3] = (Int32>>24) & 0xFF;
-    */
     hostInterfaceQueueDeviceCMD(cmd);
 }
 
@@ -145,8 +186,7 @@ void hostInterfaceReader::hostInterfaceQueueDeviceCMD(DeviceCommand cmd)
 
 unsigned int hostInterfaceReader::hostInterfaceProcessCommand()
 {
-    uint32_t numBytesRead = 0;
-    uint8_t USBDeviceCMD[8];
+    uint8_t USBDeviceCMD[8] = {0};
 
     while (deviceCMDsToProcess)
     {
@@ -174,26 +214,38 @@ unsigned int hostInterfaceReader::hostInterfaceProcessCommand()
         USBDeviceCMD[6] = ActualDeviceCMD.Value.Byte[3];
         USBDeviceCMD[7] = Checksum;
 
-        if(!_serialDevice->isOpen())
-        {
-            qDebug() << "Error sending Data, device not open";
-        }
-
         _serialDevice->write((const char *) USBDeviceCMD, 8);
         _serialDevice->flush();
-        _serialDevice->waitForBytesWritten(100);
+        //my_serial->write(USBDeviceCMD, 8);
+        //my_serial->flushOutput();
+        if(_serialDevice->waitForBytesWritten(1000))
+        {
+            //qDebug() << "Sent data";
+        }
+        else
+        {
+            qDebug() << "Sent data failed, time out waiting for buffer";
+        }
     }
 
-    if((_serialDevice->bytesAvailable() > 0) && ((_serialDevice->bytesAvailable() % 8)==0))
+    int numBytesRead = 0;
+    //uint32_t numBytesAvailable = my_serial->available();
+
+    //if((numBytesAvailable > 0) && ((numBytesAvailable % 8)==0))
+    if((_serialDevice->bytesAvailable() > 0) && ((_serialDevice->bytesAvailable() % 8)==0) && (_serialDevice->isReadable()))
     {
+        QByteArray USBHostCMD;
         USBHostCMD = _serialDevice->readAll();
-        if(USBHostCMD.size()>0)
+        //int readBytes = my_serial->read((uint8_t*) USBHostCMD.data(), numBytesAvailable);
+        int readBytes = USBHostCMD.size();
+        //_serialDevice->clear(QSerialPort::Input);
+        if(readBytes>0)
         {
-            numBytesRead += USBHostCMD.size();
-            for(int i=0; i<(USBHostCMD.size()/8); i++)
+            numBytesRead += readBytes;
+            for(int j=0; j<(readBytes/8); j++)
             {
                 uint8_t checksum = 0;
-                for (i = 0; i < 7; i++)
+                for (int i = 0; i < 7; i++)
                     checksum += (uint8_t) USBHostCMD[i];
 
                 if(checksum == ((uint8_t) USBHostCMD[7]))
@@ -220,12 +272,17 @@ unsigned int hostInterfaceReader::hostInterfaceProcessCommand()
         {
             qDebug() << "Error reading Data, clearing all input buffers";
             _serialDevice->clear(QSerialPort::Direction::Input);
+            //my_serial->flushInput();
         }
     }
-    else if((_serialDevice->bytesAvailable() > 0) && ((_serialDevice->bytesAvailable() % 8)!=0))
+    else if((_serialDevice->bytesAvailable() > 0) && ((_serialDevice->bytesAvailable() % 8)!=0) && (_serialDevice->isReadable()))
+    //else if((numBytesAvailable > 0) && ((numBytesAvailable % 8)!=0))
     {
         numBytesRead += _serialDevice->readAll().size();
+        //numBytesRead += my_serial->read(numBytesAvailable).size();
+        //my_serial->flushInput();
         qDebug() << "Host Interface out of sync, flushed " << numBytesRead << "Bytes from Buffer!\n";
     }
+
     return numBytesRead;
 }

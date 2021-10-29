@@ -9,7 +9,6 @@ configurator::configurator(QSerialPort* port, QWidget *parent) :
 {
     ui->setupUi(this);
     serialPort = port;
-    configState.outputVoltage = 0;
 }
 
 configurator::~configurator()
@@ -17,22 +16,40 @@ configurator::~configurator()
     delete ui;
 }
 
-void configurator::on_horizontalSlider_Vout_sliderMoved(int position)
+void configurator::on_horizontalSlider_Vout_valueChanged(int value)
 {
-    this->ui->doubleSpinBox_Vout->setValue(position/10);
-    configState.outputVoltage = position * 100;
+    configState.targetOutputVoltage = value * 100.0;
+    this->ui->doubleSpinBox_Vout->setValue(value/10.0);
+
     emit configChanged(configState);
 }
 
 
 void configurator::on_doubleSpinBox_Vout_valueChanged(double arg1)
 {
-    this->ui->horizontalSlider_Vout->setValue(arg1 * 10);
+    configState.targetOutputVoltage = arg1 * 1000.0;
+    this->ui->horizontalSlider_Vout->setValue(arg1 * 10.0);
+
+    //emit configChanged(configState);
 }
 
-
-void configurator::on_pushButton_toggled(bool checked)
+void configurator::sampleRateSliderChanged(int sliderPos)
 {
-    qDebug() << checked;
-}
+    switch (sliderPos)
+    {
+    case 1:
+        configState.targetSampleRate = 10;
+        break;
+    case 2:
+        configState.targetSampleRate = 100;
+        break;
+    case 3:
+        configState.targetSampleRate = 1000;
+        break;
+    case 4:
+        configState.targetSampleRate = 10000;
+        break;
+    }
 
+    emit configChanged(configState);
+}

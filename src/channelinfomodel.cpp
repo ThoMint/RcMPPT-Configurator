@@ -107,9 +107,15 @@ ChannelInfoModel::ChannelInfoModel(const QStringList& channelNames) :
     }
 }
 
+const  char ChannelInfoModel::hifChNames[PLOT_MAX_NUM_CHANNELS][10] =
+{
+    "Vout",
+    "Vin"
+};
+
 ChannelInfoModel::ChannelInfo::ChannelInfo(unsigned index)
 {
-    name = tr("Channel %1").arg(index + 1);
+    name = hifChNames[index];//tr("Channel %1").arg(index + 1);
     visibility = true;
     color = colors[index % NUMOF_COLORS];
     gain = 1.0;
