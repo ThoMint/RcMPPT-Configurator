@@ -25,6 +25,8 @@
 #define OPTYPE_TARGET_OUTPUT_CURRENT   4
 #define OPTYPE_TARGET_SAMPLE_RATE      5
 #define OPTYPE_SAMPLE_NUM_OF_CHANNELS  6
+#define OPTYPE_OUTPUT_CURRENT          7
+#define OPTYPE_INPUT_CURRENT           8
 
 // status codes
 #define OPSTATUS_OK                                 100
@@ -43,7 +45,7 @@
 #define OPSTATUS_ACTIVE_COMM                        129
 
 #define DEVICE_CMD_QUEUE_SIZE 10
-#define PLOT_MAX_NUM_CHANNELS 2
+#define PLOT_MAX_NUM_CHANNELS 4
 
 // TMCL host/device command
 typedef struct
@@ -53,7 +55,7 @@ typedef struct
     uint8_t Type;
     union
     {
-        uint32_t Int32;
+        int Int32;
         uint8_t Byte[4];
     } Value;
 } HostCommand, DeviceCommand;

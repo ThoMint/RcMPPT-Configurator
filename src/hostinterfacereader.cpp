@@ -121,7 +121,11 @@ unsigned int hostInterfaceReader::readData()
     }
 
     //qDebug() << my_serial->available();
-    qDebug() << _serialDevice->bytesAvailable();
+    //qDebug() << _serialDevice->bytesAvailable();
+    if (_serialDevice->bytesAvailable() < 8)
+    {
+        return numBytesRead;
+    }
 
     numBytesRead += hostInterfaceProcessCommand();
 
@@ -144,6 +148,14 @@ void hostInterfaceReader::hostInterfaceExecuteActualCommand()
         case OPTYPE_INPUT_VOLTAGE:
             currentSampleState.channelSamples[1] = (ActualHostCMD.Value.Int32);
             currentSampleState.channelNames[1] = "Input Voltage";
+            break;
+        case OPTYPE_OUTPUT_CURRENT:
+            currentSampleState.channelSamples[2] = (ActualHostCMD.Value.Int32);
+            currentSampleState.channelNames[2] = "Output Current";
+            break;
+        case OPTYPE_INPUT_CURRENT:
+            currentSampleState.channelSamples[3] = (ActualHostCMD.Value.Int32);
+            currentSampleState.channelNames[3] = "Input Current";
             break;
         }
         break;
@@ -188,7 +200,7 @@ unsigned int hostInterfaceReader::hostInterfaceProcessCommand()
 {
     uint8_t USBDeviceCMD[8] = {0};
 
-    while (deviceCMDsToProcess)
+    if (deviceCMDsToProcess)
     {
         int index = deviceCMDProcessPos;
         ActualDeviceCMD = DeviceCMDQueue[index];
@@ -215,17 +227,7 @@ unsigned int hostInterfaceReader::hostInterfaceProcessCommand()
         USBDeviceCMD[7] = Checksum;
 
         _serialDevice->write((const char *) USBDeviceCMD, 8);
-        _serialDevice->flush();
         //my_serial->write(USBDeviceCMD, 8);
-        //my_serial->flushOutput();
-        if(_serialDevice->waitForBytesWritten(1000))
-        {
-            //qDebug() << "Sent data";
-        }
-        else
-        {
-            qDebug() << "Sent data failed, time out waiting for buffer";
-        }
     }
 
     int numBytesRead = 0;

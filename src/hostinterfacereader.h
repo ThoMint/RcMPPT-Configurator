@@ -35,7 +35,7 @@
 typedef struct sampleState
 {
     QString channelNames[PLOT_MAX_NUM_CHANNELS];
-    uint32_t channelSamples[PLOT_MAX_NUM_CHANNELS];
+    int channelSamples[PLOT_MAX_NUM_CHANNELS];
 } deviceSampleState;
 
 class hostInterfaceReader : public AbstractReader

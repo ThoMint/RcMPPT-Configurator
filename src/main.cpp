@@ -80,10 +80,11 @@ int main(int argc, char *argv[])
     QApplication::setStyle(new DarkStyle);
     QApplication::setPalette(QApplication::style()->standardPalette());
 
-#ifdef Q_OS_WIN
+//#ifdef Q_OS_WIN
     QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << ":icons");
+    QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << ":winicons");
     QIcon::setThemeName("material");
-#endif
+//#endif
 
     //FramelessWindow framelessWindow;
 

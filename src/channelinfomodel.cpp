@@ -110,7 +110,9 @@ ChannelInfoModel::ChannelInfoModel(const QStringList& channelNames) :
 const  char ChannelInfoModel::hifChNames[PLOT_MAX_NUM_CHANNELS][10] =
 {
     "Vout",
-    "Vin"
+    "Vin",
+    "CurOut",
+    "CurIn"
 };
 
 ChannelInfoModel::ChannelInfo::ChannelInfo(unsigned index)

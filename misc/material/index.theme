@@ -6,3 +6,5 @@ Directories=32x32/actions
 
 [32x32/actions]
 Size=32
+Context=Actions
+Type=Fixed
