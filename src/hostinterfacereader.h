@@ -80,7 +80,7 @@ private slots:
     void configChanged(RcMPPTConfiguration configState);
 
 signals:
-    void sampleRateSliderChanged(int sliderPos);
+    void cellVoltageUpdate(int cellIndex, int cellVoltage);
 /*
     SamplePack* parseLine(const QString& line) const;
 */

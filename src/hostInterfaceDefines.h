@@ -17,6 +17,7 @@
 #define OPCODE_REPORT_AVERAGE_VALUE       11
 #define OPCODE_FINISHED_SAMPLE            12
 #define OPCODE_SET_SETTING                13
+#define OPCODE_REPORT_CELL_VOLTAGE        14
 
 // operation types
 #define OPTYPE_OUTPUT_VOLTAGE          1
@@ -27,6 +28,7 @@
 #define OPTYPE_SAMPLE_NUM_OF_CHANNELS  6
 #define OPTYPE_OUTPUT_CURRENT          7
 #define OPTYPE_INPUT_CURRENT           8
+
 
 // status codes
 #define OPSTATUS_OK                                 100

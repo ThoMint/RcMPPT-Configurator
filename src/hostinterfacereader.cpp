@@ -27,6 +27,7 @@ hostInterfaceReader::hostInterfaceReader(QSerialPort* device, PortControl* portC
     AbstractReader(device, parent),
     _settingsWidget(portControl)
 {
+    connect(this, &hostInterfaceReader::cellVoltageUpdate, configurator, &configurator::cellVoltageUpdate);
     connect(configurator, &configurator::configChanged, this, &hostInterfaceReader::configChanged);
     connect(&_settingsWidget, &hostInterfaceReaderSettings::sampleRateSliderChanged, configurator, &configurator::sampleRateSliderChanged);
 
@@ -169,6 +170,9 @@ void hostInterfaceReader::hostInterfaceExecuteActualCommand()
 
         feedOut(*samples);
         delete samples;
+        break;
+    case OPCODE_REPORT_CELL_VOLTAGE:
+        emit cellVoltageUpdate(ActualHostCMD.Type, ActualHostCMD.Value.Int32);
         break;
     default:
         break;
